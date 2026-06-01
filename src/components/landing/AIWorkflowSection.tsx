@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Check, MessageSquare, ClipboardCopy, Zap, ArrowRight, Bot } from 'lucide-react'
-import { AI_SYSTEM_PROMPT } from '../../lib/aiPrompt'
+import { AI_SYSTEM_PROMPT, HTML_SYSTEM_PROMPT } from '../../lib/aiPrompt'
 
 const STEPS = [
   {
@@ -35,10 +35,11 @@ const SEPARATOR_COLOR = 'var(--accent-violet)'
 function PromptLine({ line }: { line: string }) {
   if (line === '') return <br />
 
-  if (line.startsWith('---')) {
+  // Handle both Markdown and HTML separators
+  if (line.startsWith('---') || line.includes('<!-- slide -->')) {
     return (
       <div>
-        <span style={{ color: SEPARATOR_COLOR, opacity: 0.8 }}>---</span>
+        <span style={{ color: SEPARATOR_COLOR, opacity: 0.8 }}>{line}</span>
       </div>
     )
   }
@@ -70,6 +71,22 @@ function PromptLine({ line }: { line: string }) {
     )
   }
 
+  // Handle HTML tags
+  if (line.includes('<') && line.includes('>')) {
+    const parts = line.split(/(<[^>]+>)/g)
+    return (
+      <div>
+        {parts.map((part, i) =>
+          part.startsWith('<') ? (
+            <span key={i} style={{ color: 'var(--accent-green)', opacity: 0.85 }}>{part}</span>
+          ) : (
+            <span key={i} style={{ color: 'var(--text-secondary)' }}>{part}</span>
+          )
+        )}
+      </div>
+    )
+  }
+
   if (line.startsWith('-')) {
     return (
       <div>
@@ -88,14 +105,17 @@ function PromptLine({ line }: { line: string }) {
 
 export default function AIWorkflowSection() {
   const [copied, setCopied] = useState(false)
+  const [promptMode, setPromptMode] = useState<'markdown' | 'html'>('markdown')
+
+  const currentPrompt = promptMode === 'markdown' ? AI_SYSTEM_PROMPT : HTML_SYSTEM_PROMPT
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(AI_SYSTEM_PROMPT)
+    navigator.clipboard.writeText(currentPrompt)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const lines = AI_SYSTEM_PROMPT.split('\n')
+  const lines = currentPrompt.split('\n')
 
   return (
     <section id="ai-workflow" className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden">
@@ -185,28 +205,54 @@ export default function AIWorkflowSection() {
                 <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
                 <div className="w-3 h-3 rounded-full bg-[#28c840]" />
               </div>
-              <div className="flex items-center gap-2 min-w-0">
-                <Bot size={13} className="text-[var(--accent-cyan)] shrink-0" />
-                <span className="text-xs font-mono text-[var(--text-muted)] truncate">system-prompt.md</span>
+              <div className="flex items-center gap-2">
+                <Bot size={13} className="text-[var(--accent-cyan)]" />
+                <span className="text-xs font-mono text-[var(--text-muted)]">system-prompt</span>
               </div>
-              <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[var(--accent-amber)]/10 border border-[var(--accent-amber)]/20">
-                <span className="text-[10px] font-mono text-[var(--accent-amber)]">3 variables to fill</span>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[var(--accent-amber)]/10 border border-[var(--accent-amber)]/20">
+                <span className="text-[10px] font-mono text-[var(--accent-amber)]">5 variables to fill</span>
               </div>
             </div>
 
-            <motion.button
-              onClick={handleCopy}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs font-semibold font-[Syne] transition-all shrink-0"
-              style={{
-                background: copied ? 'var(--accent-green)' : 'var(--accent-cyan)',
-                color: '#000',
-              }}
-            >
-              {copied ? <Check size={13} /> : <Copy size={13} />}
-              {copied ? 'Copied!' : 'Copy Prompt'}
-            </motion.button>
+            <div className="flex items-center gap-3">
+              {/* Mode toggle */}
+              <div className="flex gap-1.5 bg-[var(--bg-elevated)] rounded-lg p-1 border border-[var(--border)]">
+                <button
+                  onClick={() => setPromptMode('markdown')}
+                  className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
+                    promptMode === 'markdown'
+                      ? 'bg-[var(--accent-cyan)] text-black'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  Markdown
+                </button>
+                <button
+                  onClick={() => setPromptMode('html')}
+                  className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
+                    promptMode === 'html'
+                      ? 'bg-[var(--accent-cyan)] text-black'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  HTML
+                </button>
+              </div>
+
+              <motion.button
+                onClick={handleCopy}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold font-[Syne] transition-all"
+                style={{
+                  background: copied ? 'var(--accent-green)' : 'var(--accent-cyan)',
+                  color: '#000',
+                }}
+              >
+                {copied ? <Check size={13} /> : <Copy size={13} />}
+                {copied ? 'Copied!' : 'Copy Prompt'}
+              </motion.button>
+            </div>
           </div>
 
           {/* Prompt content */}

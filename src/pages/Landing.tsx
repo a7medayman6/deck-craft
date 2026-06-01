@@ -256,7 +256,7 @@ export default function Landing() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight max-w-5xl mb-6"
+          className="font-display text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] tracking-tight max-w-5xl mb-6"
         >
           Turn Documents Into{' '}
           <span className="gradient-text">Beautiful</span>{' '}
