@@ -10,6 +10,7 @@ import { useAppStore } from '../store/useAppStore'
 import { themeList } from '../lib/themes'
 import { Button } from '../components/ui/Button'
 import AIWorkflowSection from '../components/landing/AIWorkflowSection'
+import AnimatedDots from '../components/landing/AnimatedDots'
 import type { ThemeName } from '../types'
 
 const demoMarkdown = `# Ship Faster
@@ -179,7 +180,8 @@ export default function Landing() {
   const isDark = current.dark !== false
 
   return (
-    <div className="min-h-screen bg-[var(--bg-void)] overflow-x-hidden">
+    <div className="min-h-screen bg-[var(--page-bg)] overflow-x-hidden relative">
+      <AnimatedDots />
       {/* Grid bg */}
       <div className="fixed inset-0 grid-bg opacity-50 pointer-events-none" />
 
@@ -392,7 +394,7 @@ export default function Landing() {
           </div>
 
           {/* Bottom fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--bg-void)] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--page-bg)] to-transparent pointer-events-none" />
         </motion.div>
       </motion.section>
 

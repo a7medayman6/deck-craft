@@ -3,17 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --bg-void: #07070e;
-  --bg-surface: #0d0d1a;
-  --bg-elevated: #131326;
-  --bg-hover: #1a1a33;
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.15);
-  --border-accent: rgba(0, 217, 255, 0.3);
-  --text-primary: #e8e8ff;
-  --text-secondary: #9898bb;
-  --text-muted: #525278;
+  --bg-void: #f8faf8;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f3f4f6;
+  --bg-hover: #f1f5f9;
+  --border: rgba(15, 23, 42, 0.06);
+  --border-strong: rgba(15, 23, 42, 0.12);
+  --border-accent: rgba(0, 217, 255, 0.12);
+  --text-primary: #0f1724;
+  --text-secondary: #475569;
+  --text-muted: #6b7280;
   --accent-cyan: #00d9ff;
+  --page-bg: #f8faf8;
   --accent-violet: #8b5cf6;
   --accent-coral: #ff6b6b;
   --accent-amber: #f59e0b;
@@ -81,16 +82,16 @@ button, a, [role="button"] {
 
 /* Glass effect */
 .glass {
-  background: rgba(13, 13, 26, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border);
 }
 
 .glass-strong {
-  background: rgba(19, 19, 38, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-strong);
 }
 
@@ -113,6 +114,24 @@ button, a, [role="button"] {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Animated dots background for landing page */
+.animated-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+  background-image: radial-gradient(circle at 10px 10px, rgba(0,0,0,0.06) 2px, transparent 2px), radial-gradient(circle at 30px 30px, rgba(0,0,0,0.04) 2px, transparent 2px);
+  background-size: 60px 60px, 90px 90px;
+  mix-blend-mode: normal;
+  animation: dots-move 40s linear infinite;
+}
+
+@keyframes dots-move {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 2000px 1000px, -1500px -800px; }
 }
 
 .gradient-text-warm {
